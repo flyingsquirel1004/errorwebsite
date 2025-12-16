@@ -86,14 +86,9 @@
 
         <div class="cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300">
             <p class="text-13">
-                <span class="cf-footer-item sm:block sm:mb-1">Ray ID: <strong class="font-semibold">9aefa8382cbdb83d</strong></span>
+                <span class="cf-footer-item">Ray ID: <span id="ray-id" class="ray-id">abc123...xyz789</span></span>
                 <span class="cf-footer-separator sm:hidden">&bull;</span>
-                <span id="cf-footer-item-ip" class="cf-footer-item hidden sm:block sm:mb-1">
-                    Your IP:
-                    <button type="button" id="cf-footer-ip-reveal" class="cf-footer-ip-reveal-btn">Click to reveal</button>
-                    <span class="hidden" id="cf-footer-ip"></span>
-                    <span class="cf-footer-separator sm:hidden">&bull;</span>
-                </span>
+                <span class="cf-footer-item">Your IP: <span id="user-ip" class="cf-footer-ip">Loading...</span></span>
                 <span class="cf-footer-item sm:block sm:mb-1"><span>Performance &amp; security by</span> <a rel="noopener noreferrer" href="https://www.cloudflare.com/" id="brand_link" target="_blank">Cloudflare</a></span>
 
             </p>
@@ -102,5 +97,29 @@
 </div>
 <script>(function(){function d(){var b=a.getElementById("cf-footer-item-ip"),c=a.getElementById("cf-footer-ip-reveal");b&&"classList"in b&&(b.classList.remove("hidden"),c.addEventListener("click",function(){c.classList.add("hidden");a.getElementById("cf-footer-ip").classList.remove("hidden")}))}var a=document;document.addEventListener&&a.addEventListener("DOMContentLoaded",d)})();</script>
 
+<script>
+  async function getUserIP() {
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      document.getElementById('user-ip').textContent = data.ip;
+    } catch (error) {
+      console.error('Error fetching IP:', error);
+      document.getElementById('user-ip').textContent = 'Unknown';
+    }
+  }
+  function generateRayID() {
+    const chars = '0123456789abcdef';
+    let rayID = '';
+    for (let i = 0; i < 16; i++) {
+      rayID += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return rayID;
+  }
+  window.onload = () => {
+    getUserIP();
+    document.getElementById('ray-id').textContent = generateRayID();
+  };
+</script>
 </body>
 </html>
