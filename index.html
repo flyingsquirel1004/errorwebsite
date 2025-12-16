@@ -92,7 +92,7 @@
                 <span class="cf-footer-separator sm:hidden">&bull;</span>
                     <span class="cf-footer-item">
                     Your IP: 
-                    <span id="ip-container" style="cursor: pointer; color: #007bff; text-decoration: underline;">
+                    <span id="ip-reveal" class="cf-footer-ip" style="cursor: pointer;">
                         Click to reveal
                     </span>
                 </span>
@@ -103,40 +103,39 @@
     </div>
 </div>
 <script>(function(){function d(){var b=a.getElementById("cf-footer-item-ip"),c=a.getElementById("cf-footer-ip-reveal");b&&"classList"in b&&(b.classList.remove("hidden"),c.addEventListener("click",function(){c.classList.add("hidden");a.getElementById("cf-footer-ip").classList.remove("hidden")}))}var a=document;document.addEventListener&&a.addEventListener("DOMContentLoaded",d)})();</script>
-
 <script>
-  // Fetch user's real IP and handle click-to-reveal
+  // Fetch user's real IP
   async function setupIPReveal() {
     let userIP = 'Unknown';
     try {
       const response = await fetch('https://api.ipify.org?format=json');
       const data = await response.json();
-      userIP = data.ip;
+      userIP = data.ip || 'Unknown';
     } catch (error) {
       console.error('Error fetching IP:', error);
     }
 
-    const ipContainer = document.getElementById('ip-container');
-    ipContainer.onclick = function() {
-      ipContainer.textContent = userIP;
-      ipContainer.style.cursor = 'default';
-      ipContainer.style.textDecoration = 'none';
-      ipContainer.onclick = null; // Disable further clicks
+    const revealSpan = document.getElementById('ip-reveal');
+    
+    // On click: replace text with real IP and remove pointer cursor
+    revealSpan.onclick = function() {
+      revealSpan.textContent = userIP;
+      revealSpan.style.cursor = 'default';
+      revealSpan.onclick = null; // Prevent further clicks
     };
   }
 
-  // Generate a random 16-character hex Ray ID (like real Cloudflare)
+  // Generate random 16-char hex Ray ID
   function generateRayID() {
     const chars = '0123456789abcdef';
     let rayID = '';
     for (let i = 0; i < 16; i++) {
       rayID += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    // Real ones often end with a location code, but random is fine for joke
     document.getElementById('ray-id').textContent = rayID;
   }
 
-  // Run on page load
+  // Run on load
   window.onload = function() {
     setupIPReveal();
     generateRayID();
